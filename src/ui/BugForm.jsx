@@ -32,11 +32,21 @@ const BugForm = ({ onSubmit }) => {
     updateFormData({ affectVersion: newVersions });
   };
 
-  const addVersion = () => {
-    const newVersion = {
-      ...INITIAL_VERSION,
-      name: `ver_${formData.affectVersion.length + 1}`,
-    };
+  const addVersion = (total = '') => {
+    let newVersion;
+    console.log(total);
+    if (total === 'total') {
+      newVersion = {
+        ...INITIAL_VERSION,
+        name: `total`,
+      };
+    } else {
+      newVersion = {
+        ...INITIAL_VERSION,
+        name: `ver_${formData.affectVersion.length + 1}`,
+      };
+    }
+
     updateFormData({
       affectVersion: [...formData.affectVersion, newVersion],
     });
@@ -102,7 +112,10 @@ const BugForm = ({ onSubmit }) => {
                   placeholder="e.g. 8,8,16"
                 />
                 {formData.affectVersion.length > 1 && (
-                  <DeleteButton type="button" onClick={() => deleteVersion(index)}>
+                  <DeleteButton
+                    type="button"
+                    onClick={() => deleteVersion(index)}
+                  >
                     Remove
                   </DeleteButton>
                 )}
@@ -111,11 +124,25 @@ const BugForm = ({ onSubmit }) => {
           </DataGrid>
 
           <RowAction>
-            <AddRowButton type="button" onClick={addVersion}>+ Add bug</AddRowButton>
+            <AddRowButton type="button" onClick={addVersion}>
+              + Add bug
+            </AddRowButton>
           </RowAction>
         </div>
 
-        <SubmitButton type="submit">Update Graph</SubmitButton>
+        <SubmitButton
+          type="submit"
+          onClick={() => {
+            if (
+              formData.affectVersion[formData.affectVersion.length - 1].name !== "total"
+            ){
+              addVersion("total");
+            }
+              //
+          }}
+        >
+          Update Graph
+        </SubmitButton>
       </form>
     </FormContainer>
   );

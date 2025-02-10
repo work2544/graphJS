@@ -34,7 +34,7 @@ export default function App() {
                 all_dots[all_dots.length - 2].length - 1
               ];
             return {
-              name: formData.affectVersion[index].name,
+              name: formData.affectVersion[index].name.toLowerCase,
               bugPoint: formData.affectVersion[index].bug_point,
               bugCount: bugCount,
               timeUsed: prev_time,

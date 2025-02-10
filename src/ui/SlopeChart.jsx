@@ -147,7 +147,6 @@ const SlopeChart = ({ chartData }) => {
     chartData.length > 0 ? chartData[chartData.length - 1].bugCount : 0;
   const positionScale = bugCount < 1 ? 0 : -50;
   const braceHeigth = chartData.length > 0 ? (bugCount < 2 ? 160 : 315) : 0;
-  console.log(chartData);
   return (
     <ResponsiveContainer
       width="90%"
