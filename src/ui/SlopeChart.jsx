@@ -190,7 +190,7 @@ const SlopeChart = ({ chartData }) => {
       <svg
         style={{
           position: "absolute",
-          right: -10,
+          right: -18,
           top: "50%",
           transform: `translateY(${positionScale}%)`,
           height: `${braceHeigth}px`,
