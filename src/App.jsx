@@ -7,61 +7,67 @@ export default function App() {
   const onSubmit = (e, formData) => {
     e.preventDefault();
     setSubmitData(formData);
-    var all_dots = formData.affectVersion.map((data) =>
+    const timeSeriesByVersion = formData.affectVersion.map((data) =>
       data.time.split(",").map(Number)
     );
-    let bugCount = 0;
-    let chartData = all_dots.flatMap((timesVersion, index) => {
-      return timesVersion.map((timeUsed, idx) => {
-        let firstIndex = false;
-        let lastIndex = false;
-        if (timesVersion.length === 1) {
-          firstIndex = true;
-          lastIndex = true;
-        } else if (timesVersion.length - 1 === idx) {
-          firstIndex = false;
-          lastIndex = true;
-        } else if (idx === 0) {
-          firstIndex = true;
-          lastIndex = false;
-        }
-        if (formData.affectVersion[index].name === "total") {
-          const prev_time =
-            all_dots[all_dots.length - 2][
-              all_dots[all_dots.length - 2].length - 1
-            ];
+
+    let cumulativeBugCount = 0;
+
+    let versionTimeline = timeSeriesByVersion.flatMap(
+      (versionTimes, versionIndex) => {
+        return versionTimes.map((timestamp, timeIndex) => {
+          const isFirstPoint = versionTimes.length === 1 || timeIndex === 0;
+          const isLastPoint =
+            versionTimes.length === 1 || timeIndex === versionTimes.length - 1;
+
+          const currentVersion = formData.affectVersion[versionIndex];
+
+          if (currentVersion.name === "total") {
+            const previousVersionLastTime =
+              timeSeriesByVersion[timeSeriesByVersion.length - 2][
+                timeSeriesByVersion[timeSeriesByVersion.length - 2].length - 1
+              ];
+
+            return {
+              name: currentVersion.name.toLowerCase,
+              bugPoint: currentVersion.bug_point,
+              bugCount: cumulativeBugCount,
+              timeUsed: previousVersionLastTime,
+              sumTime: 0,
+              firstIndex: false,
+              lastIndex: false,
+            };
+          }
+
+          if (currentVersion.bug_point !== 0) {
+            cumulativeBugCount += 1;
+          }
+
           return {
-            name: formData.affectVersion[index].name.toLowerCase,
-            bugPoint: formData.affectVersion[index].bug_point,
-            bugCount: bugCount,
-            timeUsed: prev_time,
+            name: currentVersion.name,
+            bugPoint: currentVersion.bug_point,
+            bugCount: cumulativeBugCount,
+            timeUsed: timestamp,
             sumTime: 0,
-            firstIndex: false,
-            lastIndex: false,
+            firstIndex: isFirstPoint,
+            lastIndex: isLastPoint,
           };
-        }
-        if (formData.affectVersion[index].bug_point !== 0) bugCount += 1;
-        return {
-          name: formData.affectVersion[index].name,
-          bugPoint: formData.affectVersion[index].bug_point,
-          bugCount: bugCount,
-          timeUsed: timeUsed,
-          sumTime: 0,
-          firstIndex: firstIndex,
-          lastIndex: lastIndex,
-        };
-      });
-    });
-    let sumTime = 0;
-    chartData = chartData.map((data, idx) => {
-      if (idx !== 0) sumTime += chartData[idx - 1].timeUsed;
+        });
+      }
+    );
+
+    let cumulativeTime = 0;
+    versionTimeline = versionTimeline.map((dataPoint, index) => {
+      if (index !== 0) {
+        cumulativeTime += versionTimeline[index - 1].timeUsed;
+      }
       return {
-        ...data,
-        sumTime: sumTime,
+        ...dataPoint,
+        sumTime: cumulativeTime,
       };
     });
-    console.log(chartData);
-    setChartData(chartData);
+
+    setChartData(versionTimeline);
   };
 
   const [chartData, setChartData] = useState([]);
