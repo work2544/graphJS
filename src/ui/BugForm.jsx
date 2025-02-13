@@ -32,23 +32,20 @@ const BugForm = ({ onSubmit }) => {
     updateFormData({ affectVersion: newVersions });
   };
 
-  const addVersion = (total = '') => {
-    let newVersion;
-    if (total === 'total') {
-      newVersion = {
-        ...INITIAL_VERSION,
-        name: `total`,
-      };
-    } else {
-      newVersion = {
-        ...INITIAL_VERSION,
-        name: `ver_${formData.affectVersion.length + 1}`,
-      };
-    }
+  const addVersion = (total = "") => {
+    let updatedVersions = [...formData.affectVersion];
+  
+  if (updatedVersions[updatedVersions.length - 1].name === "total") {
+    updatedVersions.pop();
+  }
 
-    updateFormData({
-      affectVersion: [...formData.affectVersion, newVersion],
-    });
+  const newVersion = total === "total" 
+    ? { ...INITIAL_VERSION, name: "total" }
+    : { ...INITIAL_VERSION, name: `ver_${updatedVersions.length + 1}` };
+
+  updateFormData({
+    affectVersion: [...updatedVersions, newVersion],
+  });
   };
 
   const deleteVersion = (index) => {
@@ -132,11 +129,12 @@ const BugForm = ({ onSubmit }) => {
           type="submit"
           onClick={() => {
             if (
-              formData.affectVersion[formData.affectVersion.length - 1].name !== "total"
-            ){
+              formData.affectVersion[formData.affectVersion.length - 1].name !==
+              "total"
+            ) {
               addVersion("total");
             }
-              //
+            //
           }}
         >
           Update Graph
