@@ -11,51 +11,56 @@ export default function App() {
       data.time.split(",").map(Number)
     );
     let bugCount = 0;
-    let timeUsedSum = 0;
-    setChartData(
-      all_dots.flatMap((timesVersion, index) => {
-        return timesVersion.map((timeUsed, idx) => {
-          timeUsedSum += timeUsed || 0;
-          let firstIndex = false;
-          let lastIndex = false;
-          if (timesVersion.length === 1) {
-            firstIndex = true;
-            lastIndex = true;
-          } else if (timesVersion.length - 1 === idx) {
-            firstIndex = false;
-            lastIndex = true;
-          } else if (idx === 0) {
-            firstIndex = true;
-            lastIndex = false;
-          }
-          if (formData.affectVersion[index].name === "total") {
-            const prev_time =
-              all_dots[all_dots.length - 2][
-                all_dots[all_dots.length - 2].length - 1
-              ];
-            return {
-              name: formData.affectVersion[index].name.toLowerCase,
-              bugPoint: formData.affectVersion[index].bug_point,
-              bugCount: bugCount,
-              timeUsed: prev_time,
-              sumTime: timeUsedSum + prev_time,
-              firstIndex: false,
-              lastIndex: false,
-            };
-          }
-          if (formData.affectVersion[index].bug_point !== 0) bugCount += 1;
+    let chartData = all_dots.flatMap((timesVersion, index) => {
+      return timesVersion.map((timeUsed, idx) => {
+        let firstIndex = false;
+        let lastIndex = false;
+        if (timesVersion.length === 1) {
+          firstIndex = true;
+          lastIndex = true;
+        } else if (timesVersion.length - 1 === idx) {
+          firstIndex = false;
+          lastIndex = true;
+        } else if (idx === 0) {
+          firstIndex = true;
+          lastIndex = false;
+        }
+        if (formData.affectVersion[index].name === "total") {
+          const prev_time =
+            all_dots[all_dots.length - 2][
+              all_dots[all_dots.length - 2].length - 1
+            ];
           return {
-            name: formData.affectVersion[index].name,
+            name: formData.affectVersion[index].name.toLowerCase,
             bugPoint: formData.affectVersion[index].bug_point,
             bugCount: bugCount,
-            timeUsed: timeUsed,
-            sumTime: timeUsedSum,
-            firstIndex: firstIndex,
-            lastIndex: lastIndex,
+            timeUsed: prev_time,
+            sumTime: 0,
+            firstIndex: false,
+            lastIndex: false,
           };
-        });
-      })
-    );
+        }
+        if (formData.affectVersion[index].bug_point !== 0) bugCount += 1;
+        return {
+          name: formData.affectVersion[index].name,
+          bugPoint: formData.affectVersion[index].bug_point,
+          bugCount: bugCount,
+          timeUsed: timeUsed,
+          sumTime: 0,
+          firstIndex: firstIndex,
+          lastIndex: lastIndex,
+        };
+      });
+    });
+    let sumTime = 0;
+    chartData = chartData.map((data, idx) => {
+      if (idx !== 0) sumTime += chartData[idx - 1].timeUsed;
+      return {
+        ...data,
+        sumTime: sumTime,
+      };
+    });
+    setChartData(chartData);
   };
 
   const [chartData, setChartData] = useState([]);

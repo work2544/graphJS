@@ -34,7 +34,6 @@ const BugForm = ({ onSubmit }) => {
 
   const addVersion = (total = '') => {
     let newVersion;
-    console.log(total);
     if (total === 'total') {
       newVersion = {
         ...INITIAL_VERSION,
@@ -57,7 +56,6 @@ const BugForm = ({ onSubmit }) => {
       affectVersion: formData.affectVersion.filter((_, i) => i !== index),
     });
   };
-
   return (
     <FormContainer>
       <FormHeader>
