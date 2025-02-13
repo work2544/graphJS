@@ -7,92 +7,61 @@ export default function App() {
   const onSubmit = (e, formData) => {
     e.preventDefault();
     setSubmitData(formData);
-    const processChartData = (formData) => {
-      // Input validation
-      if (!formData?.affectVersion?.length) {
-        throw new Error("Invalid form data: affectVersion is required");
-      }
-
-      // Transform time strings to number arrays
-      const timesByVersion = formData.affectVersion.map((data) => {
-        if (!data.time) return [];
-        return data.time.split(",").map((time) => {
-          const num = Number(time);
-          if (isNaN(num)) {
-            throw new Error(`Invalid time value: ${time}`);
-          }
-          return num;
-        });
-      });
-
-      let bugCount = 0;
-
-      // Process each version's data
-      const chartData = timesByVersion.flatMap((times, versionIndex) => {
-        const currentVersion = formData.affectVersion[versionIndex];
-
-        // Handle special case for "total" version
-        if (currentVersion.name === "total") {
-          const previousVersionIndex = timesByVersion.length - 2;
-          if (previousVersionIndex < 0) {
-            throw new Error('Cannot process "total" without previous versions');
-          }
-
-          const previousTimes = timesByVersion[previousVersionIndex];
-          const prevTime = previousTimes[previousTimes.length - 1] || 0;
-
-          return [
-            {
-              name: currentVersion.name.toLowerCase(),
-              bugPoint: currentVersion.bug_point,
-              bugCount,
-              timeUsed: prevTime,
-              sumTime: 0,
-              firstIndex: false,
-              lastIndex: false,
-            },
-          ];
+    var all_dots = formData.affectVersion.map((data) =>
+      data.time.split(",").map(Number)
+    );
+    let bugCount = 0;
+    let chartData = all_dots.flatMap((timesVersion, index) => {
+      return timesVersion.map((timeUsed, idx) => {
+        let firstIndex = false;
+        let lastIndex = false;
+        if (timesVersion.length === 1) {
+          firstIndex = true;
+          lastIndex = true;
+        } else if (timesVersion.length - 1 === idx) {
+          firstIndex = false;
+          lastIndex = true;
+        } else if (idx === 0) {
+          firstIndex = true;
+          lastIndex = false;
         }
-
-        // Increment bug count if necessary
-        if (currentVersion.bug_point !== 0) {
-          bugCount++;
-        }
-
-        // Map times to data points
-        return times.map((timeUsed, timeIndex) => {
-          const isFirstIndex = times.length === 1 || timeIndex === 0;
-          const isLastIndex =
-            times.length === 1 || timeIndex === times.length - 1;
-
+        if (formData.affectVersion[index].name === "total") {
+          const prev_time =
+            all_dots[all_dots.length - 2][
+              all_dots[all_dots.length - 2].length - 1
+            ];
           return {
-            name: currentVersion.name,
-            bugPoint: currentVersion.bug_point,
-            bugCount,
-            timeUsed,
-            sumTime: 0, // Will be calculated in the next step
-            firstIndex: isFirstIndex,
-            lastIndex: isLastIndex,
+            name: formData.affectVersion[index].name.toLowerCase,
+            bugPoint: formData.affectVersion[index].bug_point,
+            bugCount: bugCount,
+            timeUsed: prev_time,
+            sumTime: 0,
+            firstIndex: false,
+            lastIndex: false,
           };
-        });
+        }
+        if (formData.affectVersion[index].bug_point !== 0) bugCount += 1;
+        return {
+          name: formData.affectVersion[index].name,
+          bugPoint: formData.affectVersion[index].bug_point,
+          bugCount: bugCount,
+          timeUsed: timeUsed,
+          sumTime: 0,
+          firstIndex: firstIndex,
+          lastIndex: lastIndex,
+        };
       });
-
-      // Calculate cumulative time
-      let cumulativeTime = 0;
-      const finalChartData = chartData.map((data) => ({
+    });
+    let sumTime = 0;
+    chartData = chartData.map((data, idx) => {
+      if (idx !== 0) sumTime += chartData[idx - 1].timeUsed;
+      return {
         ...data,
-        sumTime: (cumulativeTime += data.timeUsed),
-      }));
-
-      return finalChartData;
-    };
-
-    try {
-      const chartData = processChartData(formData);
-      setChartData(chartData);
-    } catch (error) {
-      console.error("Error processing chart data:", error);
-    }
+        sumTime: sumTime,
+      };
+    });
+    console.log(chartData);
+    setChartData(chartData);
   };
 
   const [chartData, setChartData] = useState([]);
