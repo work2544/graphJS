@@ -25,7 +25,7 @@ const Line = styled.line`
 const FractionSVGDisplay = ({ numerator, denominator, x = 50, y = 20 }) => {
   if (denominator === 0) return <></>;
   const ratio = numerator / denominator;
-  const formattedRatio = ratio.toFixed(3);
+  const formattedRatio = ratio.toFixed(2);
 
   return (
     <FractionSVG width={120} height={60} viewBox={`0 0 ${10} ${60}`}>
