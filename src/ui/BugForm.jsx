@@ -35,7 +35,7 @@ const BugForm = ({ onSubmit }) => {
   const addVersion = (total = "") => {
     let updatedVersions = [...formData.affectVersion];
   
-  if (updatedVersions[updatedVersions.length - 1].name === "total") {
+  if (updatedVersions.at(-1).name === "total") {
     updatedVersions.pop();
   }
 
