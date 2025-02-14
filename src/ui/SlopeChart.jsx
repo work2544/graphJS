@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import FractionDisplay from "./FractionSVGDisplay";
 import {
   LineChart,
@@ -12,6 +12,32 @@ import {
 
 const color = "#34a3cf";
 const SlopeChart = ({ chartData }) => {
+  useEffect(() => {
+    if (!chartData.length) return;
+
+    const lastDataPoint = chartData.at(-1);
+    const targetSum = lastDataPoint.sumTime * 0.9;
+
+    const findNinetiethPercentileIndex = (data, target) => {
+      let remainingTime = target;
+
+      for (let i = 0; i < data.length; i++) {
+        if (remainingTime <= 0) return Math.max(0, i - 1);
+        remainingTime -= data[i].timeUsed;
+      }
+      return data.length - 1;
+    };
+
+    const percentileIndex = findNinetiethPercentileIndex(chartData, targetSum);
+    const percentileDataPoint = chartData.at(percentileIndex);
+
+    setNumeratorDenominator({
+      numerator: lastDataPoint.bugCount - percentileDataPoint.bugCount,
+      denominator: percentileDataPoint.bugCount,
+    });
+
+    console.log(chartData);
+  }, [chartData]);
   const CustomDot = (props) => {
     const { cx, cy, payload, yAxisHeight, index } = props;
     if (!cx || !cy || payload.length === 0) return null;
@@ -143,8 +169,12 @@ const SlopeChart = ({ chartData }) => {
       </g>
     );
   };
-  const bugCount =
-    chartData.length > 0 ? chartData[chartData.length - 1].bugCount : 0;
+  const [numeratorDenominator, setNumeratorDenominator] = useState({
+    numerator: 1,
+    denominator: 1,
+  });
+
+  const bugCount = chartData.length > 0 ? chartData.at(-1).bugCount : 0;
   const positionScale = bugCount < 1 ? 0 : -50;
   const braceHeigth = chartData.length > 0 ? (bugCount < 2 ? 160 : 315) : 0;
   return (
@@ -229,7 +259,7 @@ const SlopeChart = ({ chartData }) => {
             dominantBaseline: "middle",
           }}
         >
-          {chartData.length > 0 ? chartData[chartData.length - 1].bugCount : 0}
+          {chartData.length > 0 ? chartData.at(-1).bugCount : 0}
         </text>
       </svg>
       <svg
@@ -244,13 +274,8 @@ const SlopeChart = ({ chartData }) => {
         }}
       >
         <FractionDisplay
-          numerator={
-            chartData.length > 1
-              ? chartData[chartData.length - 1].bugCount -
-                chartData[chartData.length - 2].bugCount
-              : 0
-          }
-          denominator={bugCount}
+          numerator={numeratorDenominator.numerator}
+          denominator={numeratorDenominator.denominator}
           x={60}
           y={20}
         />
