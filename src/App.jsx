@@ -22,25 +22,20 @@ export default function App() {
 
           const currentVersion = formData.affectVersion[versionIndex];
 
-          if (currentVersion.name === "total") {
-            const previousVersionLastTime =
-              timeSeriesByVersion[timeSeriesByVersion.length - 2][
-                timeSeriesByVersion[timeSeriesByVersion.length - 2].length - 1
-              ];
+          if (currentVersion.bug_point !== 0) {
+            cumulativeBugCount += 1;
+          }
 
+          if (currentVersion.name === "total") {
             return {
-              name: currentVersion.name.toLowerCase,
+              name: currentVersion.name.toLowerCase(),
               bugPoint: currentVersion.bug_point,
               bugCount: cumulativeBugCount,
-              timeUsed: previousVersionLastTime,
+              timeUsed: 0,
               sumTime: 0,
               firstIndex: false,
               lastIndex: false,
             };
-          }
-
-          if (currentVersion.bug_point !== 0) {
-            cumulativeBugCount += 1;
           }
 
           return {
