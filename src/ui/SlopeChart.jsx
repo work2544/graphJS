@@ -6,6 +6,7 @@ import {
   Line,
   XAxis,
   YAxis,
+  Label,
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
@@ -195,7 +196,16 @@ const SlopeChart = ({ chartData }) => {
         margin={{ top: 55, right: 30, left: 50, bottom: 5 }}
       >
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis xAxisId="0" dataKey="sumTime" type={"category"} />
+        <XAxis xAxisId="0" dataKey="sumTime" type={"category"}>
+          <Label
+            value="Test Hrs"
+            offset={-10}
+            dx={20}
+            dy={20}
+            position="insideBottomRight"
+            fontSize={14}
+          />
+        </XAxis>
         <XAxis
           xAxisId="1"
           dataKey="timeUsed"
@@ -208,7 +218,16 @@ const SlopeChart = ({ chartData }) => {
           allowDecimals={false}
           domain={[0, "dataMax"]}
           dataKey={"bugCount"}
-        />
+        >
+          <Label
+            value="Bug Count"
+            offset={-10}
+            dx={0}
+            dy={-20}
+            position="insideTopLeft"
+            fontSize={14}
+          />
+        </YAxis>
         <Line
           dataKey="bugCount"
           fill="#8884d8"
