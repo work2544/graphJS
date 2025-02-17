@@ -63,7 +63,7 @@ const SlopeChart = ({ chartData }) => {
             strokeLinecap="round"
           />
           <text
-            x={cx}
+            x={cx + 10}
             y={cy - 10}
             textAnchor="middle"
             transform={`rotate(-90, ${cx - 7}, ${cy - 12})`}
