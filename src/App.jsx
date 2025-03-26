@@ -7,10 +7,12 @@ export default function App() {
   const onSubmit = (e, formData) => {
     e.preventDefault();
     setSubmitData(formData);
-    const timeSeriesByVersion = formData.affectVersion.map((data) =>
-      data.time.split(",").map(Number)
-    );
-
+    const timeSeriesByVersion = formData.affectVersion.map((data) => {
+      if (data.bug_point === 0 && data.bug_point === 1 && data.name === 'total')
+        return Array(1).fill(formData.hours);
+      else return Array(data.bug_point).fill(formData.hours);
+    });
+    console.log(timeSeriesByVersion);
     let cumulativeBugCount = 0;
 
     let versionTimeline = timeSeriesByVersion.flatMap(

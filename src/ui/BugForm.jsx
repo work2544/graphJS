@@ -1,22 +1,23 @@
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { useState } from "react";
 import styled from "styled-components";
 
 const INITIAL_VERSION = {
   name: "",
   bug_point: 0,
-  time: "",
 };
 
 // eslint-disable-next-line react/prop-types
 const BugForm = ({ onSubmit }) => {
+  const [majorVersion, setMajorVersion] = useState("x.x");
   const [formData, setFormData] = useState({
-    majorVersion: "",
-    affectVersion: [
-      { ...INITIAL_VERSION, name: "ver_1" },
-      { ...INITIAL_VERSION, name: "ver_2" },
-    ],
+    majorVersion: "x.x",
+    hours: 0,
+    affectVersion: [{ ...INITIAL_VERSION, name: `ver_x.x.1` }],
   });
+  useEffect(() => {
+    console.log(formData);
+  }, [formData]);
 
   const updateFormData = (newData) => {
     setFormData((prevData) => ({
@@ -34,18 +35,22 @@ const BugForm = ({ onSubmit }) => {
 
   const addVersion = (total = "") => {
     let updatedVersions = [...formData.affectVersion];
-  
-  if (updatedVersions.at(-1).name === "total") {
-    updatedVersions.pop();
-  }
 
-  const newVersion = total === "total" 
-    ? { ...INITIAL_VERSION, name: "total" }
-    : { ...INITIAL_VERSION, name: `ver_${updatedVersions.length + 1}` };
+    if (updatedVersions.at(-1).name === "total") {
+      updatedVersions.pop();
+    }
 
-  updateFormData({
-    affectVersion: [...updatedVersions, newVersion],
-  });
+    const newVersion =
+      total === "total"
+        ? { ...INITIAL_VERSION, name: "total" }
+        : {
+            ...INITIAL_VERSION,
+            name: `ver_${majorVersion}.${updatedVersions.length + 1}`,
+          };
+
+    updateFormData({
+      affectVersion: [...updatedVersions, newVersion],
+    });
   };
 
   const deleteVersion = (index) => {
@@ -62,18 +67,48 @@ const BugForm = ({ onSubmit }) => {
       <form onSubmit={(e) => onSubmit(e, formData)}>
         <div>
           <DataGrid>
-            <InputGroupLabel htmlFor="major">Major Version:</InputGroupLabel>
+            <InputGroupLabel htmlFor="major">Major Version</InputGroupLabel>
             <Input
               id="major"
-              value={formData.majorVersion}
-              onChange={(e) => updateFormData({ majorVersion: e.target.value })}
+              value={majorVersion}
+              onChange={(e) => {
+                const newMajor = e.target.value;
+                setMajorVersion(newMajor);
+                updateFormData({
+                  majorVersion: newMajor,
+                  affectVersion: formData.affectVersion.map(
+                    (version, index) => {
+                      if (version.name !== "total")
+                        return {
+                          ...version,
+                          name: `ver_${newMajor}.${index + 1}`,
+                        };
+                      else {
+                        return { ...version,name:'total' };
+                      }
+                    }
+                  ),
+                });
+              }}
+            />
+          </DataGrid>
+          <DataGrid>
+            <InputGroupLabel htmlFor="hours">Test Hours</InputGroupLabel>
+            <Input
+              id="hours"
+              type="number"
+              value={String(formData.hours).replace(/^0+/, "") || 0}
+              onChange={(e) =>
+                updateFormData({
+                  hours: parseInt(e.target.value.replace(/^0+/, "")),
+                })
+              }
             />
           </DataGrid>
 
-          <DataGrid columns="repeat(4, 1fr)">
+          <DataGrid columns="repeat(3, 1fr)">
             <InputGroupLabel>Name</InputGroupLabel>
             <InputGroupLabel>Bug Point</InputGroupLabel>
-            <InputGroupLabel>Test (Hrs)</InputGroupLabel>
             <InputGroupLabel />
 
             {formData.affectVersion.map((version, index) => (
@@ -83,28 +118,20 @@ const BugForm = ({ onSubmit }) => {
                   onChange={(e) =>
                     handleVersionChange(index, "name", e.target.value)
                   }
-                  placeholder="e.g. ver_1"
+                  disabled
                 />
                 <Input
                   type="number"
                   min="0"
-                  value={version.bug_point}
-                  onChange={(e) =>
+                  value={String(version.bug_point).replace(/^0+/, "") || 0}
+                  onChange={(e) => {
                     handleVersionChange(
                       index,
                       "bug_point",
-                      Number(e.target.value)
-                    )
-                  }
+                      Number(e.target.value.replace(/^0+/, ""))
+                    );
+                  }}
                   placeholder="e.g. 1"
-                />
-                <Input
-                  pattern="^[0-9]+(,[0-9]+)*$"
-                  value={version.time}
-                  onChange={(e) =>
-                    handleVersionChange(index, "time", e.target.value)
-                  }
-                  placeholder="e.g. 8,8,16"
                 />
                 {formData.affectVersion.length > 1 && (
                   <DeleteButton

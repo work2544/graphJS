@@ -17,25 +17,6 @@ const SlopeChart = ({ chartData }) => {
     if (!chartData.length) return;
 
      const lastDataPoint = chartData.at(-1);
-    // const targetSum = lastDataPoint.sumTime * 0.9;
-
-    // const findNinetiethPercentileIndex = (data, target) => {
-    //   let remainingTime = target;
-
-    //   for (let i = 0; i < data.length; i++) {
-    //     if (remainingTime <= 0) return Math.max(0, i - 1);
-    //     remainingTime -= data[i].timeUsed;
-    //   }
-    //   return data.length - 1;
-    // };
-
-    // const percentileIndex = findNinetiethPercentileIndex(chartData, targetSum);
-    // const percentileDataPoint = chartData.at(percentileIndex);
-
-    // setNumeratorDenominator({
-    //   numerator: lastDataPoint.bugCount - percentileDataPoint.bugCount,
-    //   denominator: percentileDataPoint.bugCount,
-    // });
         setNumeratorDenominator({
       numerator: 0,
       denominator: lastDataPoint.bugCount,
