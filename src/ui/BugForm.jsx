@@ -5,6 +5,7 @@ import styled from "styled-components";
 const INITIAL_VERSION = {
   name: "",
   bug_point: 0,
+  time: "0",
 };
 
 // eslint-disable-next-line react/prop-types
@@ -46,6 +47,7 @@ const BugForm = ({ onSubmit }) => {
         : {
             ...INITIAL_VERSION,
             name: `ver_${majorVersion}.${updatedVersions.length + 1}`,
+            time: `${formData.hours}`,
           };
 
     updateFormData({
@@ -84,7 +86,7 @@ const BugForm = ({ onSubmit }) => {
                           name: `ver_${newMajor}.${index + 1}`,
                         };
                       else {
-                        return { ...version,name:'total' };
+                        return { ...version, name: "total" };
                       }
                     }
                   ),
@@ -98,11 +100,16 @@ const BugForm = ({ onSubmit }) => {
               id="hours"
               type="number"
               value={String(formData.hours).replace(/^0+/, "") || 0}
-              onChange={(e) =>
-                updateFormData({
-                  hours: parseInt(e.target.value.replace(/^0+/, "")),
-                })
-              }
+              onChange={(e) => {
+                const number = parseInt(e.target.value.replace(/^0+/, ""));
+                const newVersions = formData.affectVersion.map((version) => ({
+                  ...version,
+                  time: Array(version.bug_point || 1)
+                    .fill(number)
+                    .join(","),
+                }));
+                updateFormData({ hours: number, affectVersion: newVersions });
+              }}
             />
           </DataGrid>
 
@@ -125,11 +132,20 @@ const BugForm = ({ onSubmit }) => {
                   min="0"
                   value={String(version.bug_point).replace(/^0+/, "") || 0}
                   onChange={(e) => {
-                    handleVersionChange(
-                      index,
-                      "bug_point",
-                      Number(e.target.value.replace(/^0+/, ""))
+                    const number = Number(e.target.value.replace(/^0+/, ""));
+                    const newVersions = formData.affectVersion.map(
+                      (version, i) =>
+                        i === index
+                          ? {
+                              ...version,
+                              bug_point: number,
+                              time: Array(number)
+                                .fill(formData.hours)
+                                .join(","),
+                            }
+                          : version
                     );
+                    updateFormData({ affectVersion: newVersions });
                   }}
                   placeholder="e.g. 1"
                 />
