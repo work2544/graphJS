@@ -99,6 +99,7 @@ const BugForm = ({ onSubmit }) => {
             <Input
               id="hours"
               type="number"
+              min={0}
               value={String(formData.hours).replace(/^0+/, "") || 0}
               onChange={(e) => {
                 const number = parseInt(e.target.value.replace(/^0+/, ""));
