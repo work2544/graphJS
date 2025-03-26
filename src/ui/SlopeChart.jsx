@@ -50,9 +50,10 @@ const SlopeChart = ({ chartData }) => {
           <text
             x={cx + 10}
             y={cy - 10}
+            fontFamily="sans-serif"
             textAnchor="middle"
-            transform={`rotate(-90, ${cx - 7}, ${cy - 12})`}
-            fontSize="14"
+            transform={`rotate(-90, ${cx - 6}, ${cy - 13})`}
+            fontSize="11"
           >
             {payload.name}
           </text>

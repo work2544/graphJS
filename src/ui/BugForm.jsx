@@ -14,7 +14,7 @@ const BugForm = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
     majorVersion: "x.x",
     hours: 0,
-    affectVersion: [{ ...INITIAL_VERSION, name: `ver_x.x.1` }],
+    affectVersion: [{ ...INITIAL_VERSION, name: `ver_x.x.0` }],
   });
   useEffect(() => {
     console.log(formData);
@@ -46,7 +46,7 @@ const BugForm = ({ onSubmit }) => {
         ? { ...INITIAL_VERSION, name: "total" }
         : {
             ...INITIAL_VERSION,
-            name: `ver_${majorVersion}.${updatedVersions.length + 1}`,
+            name: `ver_${majorVersion}.${updatedVersions.length}`,
             time: `${formData.hours}`,
           };
 
@@ -83,7 +83,7 @@ const BugForm = ({ onSubmit }) => {
                       if (version.name !== "total")
                         return {
                           ...version,
-                          name: `ver_${newMajor}.${index + 1}`,
+                          name: `ver_${newMajor}.${index}`,
                         };
                       else {
                         return { ...version, name: "total" };
@@ -125,7 +125,6 @@ const BugForm = ({ onSubmit }) => {
                   onChange={(e) =>
                     handleVersionChange(index, "name", e.target.value)
                   }
-                  disabled
                 />
                 <Input
                   type="number"
