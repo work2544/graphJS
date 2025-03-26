@@ -100,9 +100,9 @@ const BugForm = ({ onSubmit }) => {
               id="hours"
               type="number"
               min={0}
-              value={String(formData.hours).replace(/^0+/, "") || 0}
+              value={String(formData.hours).replace(/^0+/, "")}
               onChange={(e) => {
-                const number = parseInt(e.target.value.replace(/^0+/, ""));
+                const number = e.target.value? parseInt(e.target.value.replace(/^0+/, "")) : 0;
                 const newVersions = formData.affectVersion.map((version) => ({
                   ...version,
                   time: Array(version.bug_point || 1)
