@@ -16,25 +16,29 @@ const SlopeChart = ({ chartData }) => {
   useEffect(() => {
     if (!chartData.length) return;
 
-    const lastDataPoint = chartData.at(-1);
-    const targetSum = lastDataPoint.sumTime * 0.9;
+     const lastDataPoint = chartData.at(-1);
+    // const targetSum = lastDataPoint.sumTime * 0.9;
 
-    const findNinetiethPercentileIndex = (data, target) => {
-      let remainingTime = target;
+    // const findNinetiethPercentileIndex = (data, target) => {
+    //   let remainingTime = target;
 
-      for (let i = 0; i < data.length; i++) {
-        if (remainingTime <= 0) return Math.max(0, i - 1);
-        remainingTime -= data[i].timeUsed;
-      }
-      return data.length - 1;
-    };
+    //   for (let i = 0; i < data.length; i++) {
+    //     if (remainingTime <= 0) return Math.max(0, i - 1);
+    //     remainingTime -= data[i].timeUsed;
+    //   }
+    //   return data.length - 1;
+    // };
 
-    const percentileIndex = findNinetiethPercentileIndex(chartData, targetSum);
-    const percentileDataPoint = chartData.at(percentileIndex);
+    // const percentileIndex = findNinetiethPercentileIndex(chartData, targetSum);
+    // const percentileDataPoint = chartData.at(percentileIndex);
 
-    setNumeratorDenominator({
-      numerator: lastDataPoint.bugCount - percentileDataPoint.bugCount,
-      denominator: percentileDataPoint.bugCount,
+    // setNumeratorDenominator({
+    //   numerator: lastDataPoint.bugCount - percentileDataPoint.bugCount,
+    //   denominator: percentileDataPoint.bugCount,
+    // });
+        setNumeratorDenominator({
+      numerator: 0,
+      denominator: lastDataPoint.bugCount,
     });
 
     console.log(chartData);
@@ -139,30 +143,30 @@ const SlopeChart = ({ chartData }) => {
     // }
     //if (chartData[index].firstIndex && chartData[index].lastIndex)
     return (
-      <g transform={`translate(${x},${y})`}>
+      <g transform={`translate(${x},${y+2})`}>
         {/* Left Arrow */}
         <path
-          d={`M 0 0 L ${arrowWidth} 0 M 0 0 L 10 -5 M 0 0 L 10 5`}
+          d={`M 0 0 L ${arrowWidth} 0 M 0 0 L 10 -3.5 M 0 0 L 10 3.5`}
           stroke={color}
-          strokeWidth="2"
+          strokeWidth="1"
           fill="none"
         />
         {/* Right Arrow */}
         <path
           d={`M ${arrowWidth} 0 L ${2 * arrowWidth} 0 M ${2 * arrowWidth} 0 L ${
             2 * arrowWidth - 10
-          } -5 M ${2 * arrowWidth} 0 L ${2 * arrowWidth - 10} 5`}
+          } -3.5 M ${2 * arrowWidth} 0 L ${2 * arrowWidth - 10} 3.5`}
           stroke={color}
-          strokeWidth="2"
+          strokeWidth="1"
           fill="none"
         />
 
         {/* Text Label Centered */}
         <text
           x={arrowWidth}
-          y={-10}
+          y={-5}
           textAnchor="middle"
-          fontSize="14"
+          fontSize="10"
           fontWeight="bold"
         >
           {payload.value} Hrs
