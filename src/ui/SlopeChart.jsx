@@ -61,7 +61,7 @@ const SlopeChart = ({ chartData }) => {
       </g>
     );
   };
-  const CustomXAxisTick = (props) => {
+  const BugPointXAxisTick = (props) => {
     const { x, y, payload, width, index } = props;
     const arrowWidth = width / (2 * chartData.length - 2);
     if (payload.value === 0 || index === chartData.length - 1) {
@@ -195,7 +195,7 @@ const SlopeChart = ({ chartData }) => {
         <XAxis
           xAxisId="1"
           dataKey="timeUsed"
-          tick={CustomXAxisTick}
+          tick={BugPointXAxisTick}
           axisLine={false}
           allowDuplicatedCategory={true}
         />
