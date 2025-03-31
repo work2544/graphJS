@@ -23,7 +23,18 @@ const Line = styled.line`
 
 // eslint-disable-next-line react/prop-types
 const FractionSVGDisplay = ({ numerator, denominator, x = 50, y = 20 }) => {
-  if (denominator === 0) return <></>;
+  if (denominator === 0)
+    return (
+      <FractionSVG width={120} height={60} viewBox={`0 0 ${10} ${60}`}>
+        <FractionText x={x + 10} y={y}>
+          Slope =
+        </FractionText>
+
+        <FractionText x={x + 40} y={y}>
+          {numerator}
+        </FractionText>
+      </FractionSVG>
+    );
   const ratio = numerator / denominator;
   const formattedRatio = ratio.toFixed(2);
 
