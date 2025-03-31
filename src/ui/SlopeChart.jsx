@@ -16,9 +16,9 @@ const SlopeChart = ({ chartData }) => {
   useEffect(() => {
     if (!chartData.length) return;
 
-     const lastDataPoint = chartData.at(-1);
-        setNumeratorDenominator({
-      numerator: 0,
+    const lastDataPoint = chartData.at(-2);
+    setNumeratorDenominator({
+      numerator: lastDataPoint.bugPoint,
       denominator: lastDataPoint.bugCount,
     });
 
@@ -125,7 +125,7 @@ const SlopeChart = ({ chartData }) => {
     // }
     //if (chartData[index].firstIndex && chartData[index].lastIndex)
     return (
-      <g transform={`translate(${x},${y+2})`}>
+      <g transform={`translate(${x},${y + 2})`}>
         {/* Left Arrow */}
         <path
           d={`M 0 0 L ${arrowWidth} 0 M 0 0 L 10 -3.5 M 0 0 L 10 3.5`}
@@ -157,8 +157,8 @@ const SlopeChart = ({ chartData }) => {
     );
   };
   const [numeratorDenominator, setNumeratorDenominator] = useState({
-    numerator: 1,
-    denominator: 1,
+    numerator: 0,
+    denominator: 0,
   });
 
   const bugCount = chartData.length > 0 ? chartData.at(-1).bugCount : 0;
