@@ -27,7 +27,7 @@ const SlopeChart = ({ chartData }) => {
   const CustomDot = (props) => {
     const { cx, cy, payload, yAxisHeight, index } = props;
     if (!cx || !cy || payload.length === 0) return null;
-    if (!chartData[index].firstIndex || chartData[index].name === "total") {
+    if (!chartData[index].lastIndex || chartData[index].name === "total") {
       return (
         <g key={cx}>
           <circle cx={cx} cy={cy} r={2.5} stroke="red" fill="red" />
