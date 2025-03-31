@@ -130,16 +130,17 @@ const BugForm = ({ onSubmit }) => {
                 <Input
                   type="number"
                   min="0"
-                  value={String(version.bug_point).replace(/^0+/, "") || 0}
                   onChange={(e) => {
-                    const number = Number(e.target.value.replace(/^0+/, ""));
+                    let bugnumber = Number(e.target.value);
+                    let timenumber = bugnumber == 0 ? 1 : bugnumber
+                   
                     const newVersions = formData.affectVersion.map(
                       (version, i) =>
                         i === index
                           ? {
                               ...version,
-                              bug_point: number,
-                              time: Array(number)
+                              bug_point: bugnumber,
+                              time: Array(timenumber)
                                 .fill(formData.hours)
                                 .join(","),
                             }
