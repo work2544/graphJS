@@ -1,14 +1,11 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React from "react";
+import {CustomDot} from "./custom";
 import {
-  LineChart,
   Line,
   XAxis,
   YAxis,
-  Label,
-  Tooltip,
-  Legend,
   ResponsiveContainer,
   CartesianGrid,
   ComposedChart,
@@ -16,7 +13,6 @@ import {
 } from "recharts";
 function BugCurve({ formData }) {
   const blue = "#34a3cf";
-  const yellow = "#FCA510";
   if (formData) {
     if (formData.affectVersion) {
       formData.affectVersion = formData.affectVersion.filter(
@@ -24,25 +20,7 @@ function BugCurve({ formData }) {
       );
     }
   }
-  const CustomDot = (props) => {
-    const { cx, cy, payload, yAxisHeight, index } = props;
-    if (!cx || !cy || payload.length === 0) return null;
-    console.log(payload);
-    return (
-      <g key={cx}>
-        <circle cx={cx} cy={cy} r={2.5} stroke="red" fill="red" />
-        <text
-          x={cx}
-          y={cy - 10}
-          fontFamily="sans-serif"
-          textAnchor="middle"
-          fontSize="11"
-        >
-          {payload.bug_point}
-        </text>
-      </g>
-    );
-  };
+
   return (
     <ResponsiveContainer
       width="90%"

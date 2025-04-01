@@ -3,7 +3,7 @@ import SlopeChart from "./ui/SlopeChart";
 import BugForm from "./ui/BugForm";
 import styled from "styled-components";
 import Table from "./ui/Table";
-import BugCurve from "./ui/BugCurve";
+import BugCurve from "./ui/BugCurve/BugCurve";
 
 export default function App() {
   const onSubmit = (e, formData) => {
