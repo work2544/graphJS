@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Fragment, useEffect, useState } from "react";
-import FractionDisplay from "./FractionSVGDisplay";
+import FractionDisplay from "../FractionSVGDisplay";
 import {
   LineChart,
   Line,

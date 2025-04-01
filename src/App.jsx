@@ -1,5 +1,5 @@
 import { useState } from "react";
-import SlopeChart from "./ui/SlopeChart";
+import SlopeChart from "./ui/SlopeChart/SlopeChart";
 import BugForm from "./ui/BugForm";
 import styled from "styled-components";
 import Table from "./ui/Table";
