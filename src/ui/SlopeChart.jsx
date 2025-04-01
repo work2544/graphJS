@@ -11,18 +11,16 @@ import {
   CartesianGrid,
 } from "recharts";
 
-const color = "#34a3cf";
 const SlopeChart = ({ chartData }) => {
+  const blue = "#34a3cf";
+  const yellow = "#c9a00b";
   useEffect(() => {
     if (!chartData.length) return;
-
     const lastDataPoint = chartData.at(-2);
     setNumeratorDenominator({
       numerator: lastDataPoint.bugPoint,
       denominator: lastDataPoint.bugCount,
     });
-
-    console.log(chartData);
   }, [chartData]);
   const CustomDot = (props) => {
     const { cx, cy, payload, yAxisHeight, index } = props;
@@ -43,7 +41,7 @@ const SlopeChart = ({ chartData }) => {
             x2={cx}
             y1={cy - yAxisHeight}
             y2={cy + yAxisHeight}
-            stroke={color}
+            stroke={blue}
             strokeWidth={1}
             strokeLinecap="round"
           />
@@ -76,7 +74,7 @@ const SlopeChart = ({ chartData }) => {
         {/* Left Arrow */}
         <path
           d={`M 0 0 L ${arrowWidth} 0 M 0 0 L 10 -3.5 M 0 0 L 10 3.5`}
-          stroke={color}
+          stroke={blue}
           strokeWidth="1"
           fill="none"
         />
@@ -85,7 +83,7 @@ const SlopeChart = ({ chartData }) => {
           d={`M ${arrowWidth} 0 L ${2 * arrowWidth} 0 M ${2 * arrowWidth} 0 L ${
             2 * arrowWidth - 10
           } -3.5 M ${2 * arrowWidth} 0 L ${2 * arrowWidth - 10} 3.5`}
-          stroke={color}
+          stroke={blue}
           strokeWidth="1"
           fill="none"
         />
@@ -104,9 +102,6 @@ const SlopeChart = ({ chartData }) => {
     );
   };
   const PercentileXAxisTick = (props) => {
-    const totalDataPoint = chartData.at(-1);
-    const yellow = "#c9a00b";
-
     const { x, y, payload, width, index } = props;
     const arrowWidth90th = width * 0.45;
     const arrowWidth10th = width * 0.05;
@@ -276,7 +271,7 @@ const SlopeChart = ({ chartData }) => {
                L65 160
                C65 175, 60 180, 55 180"
           fill="none"
-          stroke={color}
+          stroke={blue}
           strokeWidth="1.7"
           style={{
             transform: `scale(1, 1)`,

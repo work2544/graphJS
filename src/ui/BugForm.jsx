@@ -17,7 +17,6 @@ const BugForm = ({ onSubmit }) => {
     affectVersion: [{ ...INITIAL_VERSION, name: `ver_x.x.0` }],
   });
   useEffect(() => {
-    console.log(formData);
   }, [formData]);
 
   const updateFormData = (newData) => {
