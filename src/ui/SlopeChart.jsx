@@ -41,8 +41,8 @@ const SlopeChart = ({ chartData }) => {
           <line
             x1={cx}
             x2={cx}
-            y1={cy + yAxisHeight}
-            y2={cy - yAxisHeight}
+            y1={cy - yAxisHeight}
+            y2={cy + yAxisHeight}
             stroke={color}
             strokeWidth={1}
             strokeLinecap="round"
@@ -71,59 +71,6 @@ const SlopeChart = ({ chartData }) => {
     if (!nextDot) {
       return null;
     }
-
-    // if (lastIndex - firstIndex > 1) {
-    //   if (firstIndex !== index && lastIndex !== index) {
-    //     const middle = Math.floor(lastIndex - firstIndex) + firstIndex;
-    //     if (index === middle) {
-    //       return (
-    //         <g transform={`translate(${x},${y})`}>
-    //           {/* Text Label Centered */}
-    //           <text
-    //             x={width}
-    //             y={-10}
-    //             textAnchor="middle"
-    //             fontSize="14"
-    //             fontWeight="bold"
-    //           >
-    //             {payload.value} Hrs
-    //           </text>
-    //         </g>
-    //       );
-    //     } else {
-    //       //return line
-    //       return;
-    //     }
-    //   } else if (firstIndex === index && lastIndex !== index) {
-    //     return (
-    //       <g transform={`translate(${x},${y})`}>
-    //         {/* Left Arrow Only */}
-    //         <path
-    //           d={`M 0 0 L ${arrowWidth * 2} 0 M 0 0 L 10 -5 M 0 0 L 10 5`}
-    //           stroke="black"
-    //           strokeWidth="2"
-    //           fill="none"
-    //         />
-    //       </g>
-    //     );
-    //   } else if (firstIndex !== index && lastIndex === index) {
-    //     return (
-    //       <g transform={`translate(${x},${y})`}>
-    //         <path
-    //           d={`M ${arrowWidth * 2} 0 L ${2 * arrowWidth} 0 M ${
-    //             2 * arrowWidth
-    //           } 0 L ${2 * arrowWidth - 10} -5 M ${2 * arrowWidth} 0 L ${
-    //             2 * arrowWidth - 10
-    //           } 5`}
-    //           stroke="black"
-    //           strokeWidth="2"
-    //           fill="none"
-    //         />
-    //       </g>
-    //     );
-    //   }
-    // }
-    //if (chartData[index].firstIndex && chartData[index].lastIndex)
     return (
       <g transform={`translate(${x},${y + 2})`}>
         {/* Left Arrow */}
@@ -156,6 +103,81 @@ const SlopeChart = ({ chartData }) => {
       </g>
     );
   };
+  const PercentileXAxisTick = (props) => {
+    const totalDataPoint = chartData.at(-1);
+    const yellow = "#c9a00b";
+
+    const { x, y, payload, width, index } = props;
+    const arrowWidth90th = width * 0.45;
+    const arrowWidth10th = width * 0.05;
+    if (payload.value === 0) {
+      return null;
+    }
+    if (index === 0)
+      return (
+        <g>
+          <g transform={`translate(${x},${y + 2})`}>
+            <path
+              d={`M 0 0 L ${arrowWidth90th} 0 M 0 0 L 10 -3.5 M 0 0 L 10 3.5`}
+              stroke={yellow}
+              strokeWidth="1"
+              fill="none"
+            />
+            <path
+              d={`M ${arrowWidth90th} 0 L ${2 * arrowWidth90th} 0 M ${
+                2 * arrowWidth90th
+              } 0 L ${2 * arrowWidth90th - 10} -3.5 M ${
+                2 * arrowWidth90th
+              } 0 L ${2 * arrowWidth90th - 10} 3.5`}
+              stroke={yellow}
+              strokeWidth="1"
+              fill="none"
+            />
+            <text
+              x={arrowWidth90th}
+              y={-5}
+              textAnchor="middle"
+              fontSize="10"
+              fontWeight="bold"
+            >
+              90%
+            </text>
+          </g>
+          <g transform={`translate(${x + width * 0.9},${y + 2})`}>
+            {/* Left Arrow */}
+            <path
+              d={`M 0 0 L ${arrowWidth10th} 0 M 0 0 L 10 -3.5 M 0 0 L 10 3.5`}
+              stroke={yellow}
+              strokeWidth="1"
+              fill="none"
+            />
+            {/* Right Arrow */}
+            <path
+              d={`M ${arrowWidth10th} 0 L ${2 * arrowWidth10th} 0 M ${
+                2 * arrowWidth10th
+              } 0 L ${2 * arrowWidth10th - 10} -3.5 M ${
+                2 * arrowWidth10th
+              } 0 L ${2 * arrowWidth10th - 10} 3.5`}
+              stroke={yellow}
+              strokeWidth="1"
+              fill="none"
+            />
+
+            {/* Text Label Centered */}
+            <text
+              x={arrowWidth10th}
+              y={-5}
+              textAnchor="middle"
+              fontSize="10"
+              fontWeight="bold"
+            >
+              10%
+            </text>
+          </g>
+        </g>
+      );
+  };
+
   const [numeratorDenominator, setNumeratorDenominator] = useState({
     numerator: 0,
     denominator: 0,
@@ -163,7 +185,7 @@ const SlopeChart = ({ chartData }) => {
 
   const bugCount = chartData.length > 0 ? chartData.at(-1).bugCount : 0;
   const positionScale = bugCount < 1 ? 0 : -50;
-  const braceHeigth = chartData.length > 0 ? (bugCount < 2 ? 160 : 315) : 0;
+  const braceHeigth = chartData.length > 0 ? (bugCount < 1 ? 160 : 315) : 0;
   return (
     <ResponsiveContainer
       width="90%"
@@ -198,6 +220,15 @@ const SlopeChart = ({ chartData }) => {
           tick={BugPointXAxisTick}
           axisLine={false}
           allowDuplicatedCategory={true}
+          tickLine={false}
+        />
+        <XAxis
+          xAxisId="2"
+          dataKey="timeUsed"
+          tick={PercentileXAxisTick}
+          axisLine={false}
+          allowDuplicatedCategory={true}
+          tickLine={false}
         />
 
         <YAxis
@@ -225,7 +256,7 @@ const SlopeChart = ({ chartData }) => {
         style={{
           position: "absolute",
           right: -18,
-          top: "50%",
+          top: "43%",
           transform: `translateY(${positionScale}%)`,
           height: `${braceHeigth}px`,
           width: "100px",
