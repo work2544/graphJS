@@ -1,3 +1,4 @@
 const x=0
-const y=0
-console.log(x+y)
+var y=0
+var z="xx"
+console.log(x+y+z)
