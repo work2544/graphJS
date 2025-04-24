@@ -1,3 +1,3 @@
 const x=0
-var y=0
+const y=0
 console.log(x+y)
